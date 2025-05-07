@@ -30,6 +30,11 @@ vector<Barco> barcos = {
 
 typedef vector<vector<char>> Tablero;
 
+// Función para limpiar la pantalla usando secuencia ANSI
+void limpiarPantalla() {
+    cout << "\033[2J\033[H";
+}
+
 // Prototipos de funciones
 void inicializarTablero(Tablero& tablero);
 void mostrarTablero(const Tablero& tablero, bool ocultarBarcos);
@@ -49,6 +54,7 @@ int main() {
     inicializarTablero(tableroOrdenador);
     inicializarTablero(vistaOrdenador);
 
+    // Colocar barcos jugador y ordenador
     colocarBarcosJugador(tableroJugador);
     colocarBarcosOrdenador(tableroOrdenador);
 
@@ -57,31 +63,39 @@ int main() {
     cout << "\n¡Comienza el juego de Batalla Naval!\n";
 
     while (true) {
+        limpiarPantalla();
+
+        // Mostrar tableros actualizados
         cout << "\nTu Tablero:" << endl;
-        mostrarTablero(tableroJugador, false);  // Muestra todos los barcos y estados
+        mostrarTablero(tableroJugador, false);  // Mostrar todos los barcos y estados
 
         cout << "\nTablero del Oponente (lo que tú ves):" << endl;
-        mostrarTablero(vistaOrdenador, true); // Ocultar barcos del ordenador, mostrar impactos y fallos
+        mostrarTablero(vistaOrdenador, true); // Ocultar barcos del ordenador
 
         turnoJugador(tableroOrdenador, vistaOrdenador);
         if (todosBarcosHundidos(tableroOrdenador)) {
+            limpiarPantalla();
+            cout << "\nTu Tablero Final:" << endl;
+            mostrarTablero(tableroJugador, false);
+            cout << "\nTablero Final del Oponente:" << endl;
+            mostrarTablero(tableroOrdenador, false);
             cout << "\n¡Felicidades! Hundiste todos los barcos del oponente. ¡Ganaste!" << endl;
             break;
         }
 
+        limpiarPantalla();
         cout << "\nTurno de la computadora..." << endl;
         turnoOrdenador(tableroJugador, ataquesComputadora);
         if (todosBarcosHundidos(tableroJugador)) {
+            limpiarPantalla();
+            cout << "\nTablero Final:" << endl;
+            mostrarTablero(tableroJugador, false);
+            cout << "\nTablero Final del Oponente:" << endl;
+            mostrarTablero(tableroOrdenador, false);
             cout << "\n¡Todos tus barcos han sido hundidos. Perdiste!" << endl;
             break;
         }
     }
-
-    cout << "\nTableros Finales:" << endl;
-    cout << "Tu Tablero:" << endl;
-    mostrarTablero(tableroJugador, false);
-    cout << "Tablero del Ordenador:" << endl;
-    mostrarTablero(tableroOrdenador, false);
 
     return 0;
 }
@@ -101,7 +115,7 @@ void mostrarTablero(const Tablero& tablero, bool ocultarBarcos) {
         for (int c = 0; c < TAMANO_TABLERO; ++c) {
             char celda = tablero[r][c];
             if (ocultarBarcos && celda == CELDA_BARCO)
-                cout << " " << CELDA_VACIA; // Oculta barcos para que no se vean por el jugador
+                cout << " " << CELDA_VACIA; // Oculta barcos para que no se vean
             else
                 cout << " " << celda;
         }
@@ -139,10 +153,11 @@ void colocarBarco(Tablero& tablero, int r, int c, int tamano, bool horizontal) {
 }
 
 void colocarBarcosJugador(Tablero& tablero) {
-    cout << "Coloca tus barcos en el tablero." << endl;
     for (auto& barco : barcos) {
         bool colocado = false;
         while (!colocado) {
+            limpiarPantalla();
+            cout << "Coloca tus barcos en el tablero." << endl;
             mostrarTablero(tablero, false);
             cout << "Coloca tu " << barco.nombre << " (tamano " << barco.tamano << ")." << endl;
             cout << "Ingresa la posicion (ej. A1): ";
@@ -210,6 +225,7 @@ bool todosBarcosHundidos(const Tablero& tablero) {
 
 void turnoJugador(Tablero& tableroOrdenador, Tablero& vistaOrdenador) {
     while (true) {
+        limpiarPantalla();
         mostrarTablero(vistaOrdenador, false);
         cout << "Ingresa el objetivo a atacar (ej. B3): ";
         string pos;
@@ -261,11 +277,9 @@ void turnoOrdenador(Tablero& tableroJugador, set<pair<int, int>>& ataquesRealiza
         int fila = rand() % TAMANO_TABLERO;
         int columna = rand() % TAMANO_TABLERO;
 
-        // Evitar repetir ataque
-        if (ataquesRealizados.count({ fila, columna }) > 0)
-            continue;
+        if (ataquesRealizados.count({ fila, columna }) > 0) continue;
 
-        ataquesRealizados.insert({ fila,columna });
+        ataquesRealizados.insert({ fila, columna });
 
         cout << "La computadora te atacó en " << char('A' + fila) << (columna + 1) << "." << endl;
 
@@ -278,12 +292,10 @@ void turnoOrdenador(Tablero& tableroJugador, set<pair<int, int>>& ataquesRealiza
             tableroJugador[fila][columna] = CELDA_FALLO;
         }
         else {
-            // Hay impacto o fallo previo, pero debe haberse evitado atacar la misma posición arriba
-            // Así que no debería entrar aquí, solo seguimos el bucle para elegir otra posición.
+            // Ya impactado o fallado antes - evitar
             continue;
         }
 
         break;
     }
 }
-
