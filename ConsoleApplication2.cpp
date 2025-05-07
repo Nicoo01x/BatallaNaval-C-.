@@ -314,17 +314,17 @@ void turnoOrdenador(Tablero& tableroJugador, set<pair<int, int>>& ataquesRealiza
 
         ataquesRealizados.insert({ fila, columna });
 
-        mensajeAtaque = "La computadora te atacó en ";
+        mensajeAtaque = "La computadora te ataco en ";
         mensajeAtaque += char('A' + fila);
         mensajeAtaque += to_string(columna + 1);
         mensajeAtaque += ". ";
 
         if (tableroJugador[fila][columna] == CELDA_BARCO) {
-            mensajeAtaque += "¡La computadora impactó tu barco!";
+            mensajeAtaque += "¡La computadora impacto tu barco!";
             tableroJugador[fila][columna] = CELDA_IMPACTO;
         }
         else if (tableroJugador[fila][columna] == CELDA_VACIA) {
-            mensajeAtaque += "La computadora falló.";
+            mensajeAtaque += "La computadora fallo.";
             tableroJugador[fila][columna] = CELDA_FALLO;
         }
         else {
