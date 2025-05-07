@@ -278,10 +278,10 @@ string turnoJugador(Tablero& tableroComputadora, Tablero& vistaComputadora) {
             continue;
         }
 
-        int fila = toupper(pos[0]) - 'A';
+		int fila = toupper(pos[0]) - 'A'; //toupper convierte a mayuscula
         int columna;
         try {
-            columna = stoi(pos.substr(1)) - 1;
+			columna = stoi(pos.substr(1)) - 1; // stoi convierte a entero string a int y substr(1) obtiene la parte de la cadena que contiene el numero
         }
         catch (invalid_argument&) {
             cout << "Entrada invalida. Intenta de nuevo." << endl;
@@ -329,7 +329,7 @@ string turnoComputadora(Tablero& tableroJugador, set<pair<int, int >>& ataquesRe
         string mensaje = "La computadora te ataco en ";
         mensaje += char('A' + fila);
         mensaje += to_string(columna + 1);
-        mensaje += ". ";
+		mensaje += ". "; // += se usa para sumar una valor a la variable y remplazarlo por el nuevo valor
 
         if (tableroJugador[fila][columna] == CELDA_BARCO) {
             mensaje += "¡La computadora impacto tu barco!";
