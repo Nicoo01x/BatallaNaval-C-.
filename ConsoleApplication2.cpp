@@ -189,7 +189,7 @@ void colocarBarcosJugador(Tablero& tablero) {
             cout << "Coloca tus barcos en el tablero." << endl;
             mostrarTablero(tablero, false);
             cout << "\nColoca tu " << barco.nombre << " (tamano " << barco.tamano << ")." << endl;
-            cout << "Ingresa la posicion (ej. A1) o 'A' para colocar aleatoriamente: ";
+            cout << "Ingresa la posicion (ejemplo: A1) o 'A' para colocar aleatoriamente: ";
             string entrada;
             cin >> entrada;
 
@@ -230,7 +230,7 @@ void colocarBarcosJugador(Tablero& tablero) {
             char dir;
             cin >> dir;
             cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); 
-            bool horizontal = (tolower(dir) == 'h');
+			bool horizontal = (tolower(dir) == 'h'); // tolower convierte a minuscula
 
             if (!puedeColocarBarco(tablero, fila, columna, barco.tamano, horizontal)) {
                 cout << "No se puede colocar el barco aqui. Intenta de nuevo." << endl;
@@ -248,7 +248,7 @@ void colocarBarcosComputadora(Tablero& tablero) {
         bool colocado = false;
 		while (!colocado) { // ! es una negacion, si colocado es falso entra al bucle
             int fila = rand() % TAMANO_TABLERO;
-            int columna = rand() % TAMANO_TABLERO;
+			int columna = rand() % TAMANO_TABLERO; // rand genera un numero aleatorio
             bool horizontal = rand() % 2 == 0;
             if (puedeColocarBarco(tablero, fila, columna, barco.tamano, horizontal)) {
                 colocarBarco(tablero, fila, columna, barco.tamano, horizontal);
