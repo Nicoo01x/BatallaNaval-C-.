@@ -273,7 +273,7 @@ string turnoJugador(Tablero& tableroComputadora, Tablero& vistaComputadora) {
         string pos;
         cin >> pos;
 
-        if (pos.length() < 2 || !isalpha(pos[0]) || !isdigit(pos[1])) {
+		if (pos.length() < 2 || !isalpha(pos[0]) || !isdigit(pos[1])) { // isdigit verifica si el caracter es un digito y isalpha verifica si es una letra
             cout << "Entrada invalida. Intenta de nuevo." << endl;
             continue;
         }
