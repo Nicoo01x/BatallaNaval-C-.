@@ -1,262 +1,348 @@
-﻿#include <iostream> // Biblioteca para entrada y salida estándar
-#include <vector> // Biblioteca para usar vectores dinámicos
-#include <ctime> // Biblioteca para trabajar con tiempo (semilla para aleatorios)
-#include <cstdlib> // Biblioteca para funciones como rand()
-#include <cctype> // Biblioteca para funciones como toupper() y tolower()
-#include <stdexcept> // Biblioteca para manejar excepciones como invalid_argument
-#include <string> // Biblioteca para trabajar con cadenas de texto
-#include <set> // Biblioteca para usar conjuntos (set) y evitar duplicados
+﻿#include <iostream>
+#include <vector>
+#include <ctime>
+#include <cstdlib>
+#include <cctype> // Para toupper y tolower
+#include <stdexcept> // Para manejar excepciones de stoi
+#include <string> 
+#include <set>
 
-using namespace std; // Permite usar nombres estándar sin prefijo std::
+using namespace std;
 
-const int TAMANO_TABLERO = 8; // Define el tamaño del tablero (8x8)
-const char CELDA_VACIA = '~'; // Representa una celda vacía en el tablero
-const char CELDA_BARCO = 'S'; // Representa una celda ocupada por un barco
-const char CELDA_IMPACTO = 'X'; // Representa una celda impactada por un ataque
-const char CELDA_FALLO = 'O'; // Representa un ataque fallido
+const int TAMANO_TABLERO = 8;
+const char CELDA_VACIA = '~';
+const char CELDA_BARCO = 'S';
+const char CELDA_IMPACTO = 'X';
+const char CELDA_FALLO = 'O';
 
-// Estructura que define un barco con su tamaño y nombre
 struct Barco {
-    int tamano; // Tamaño del barco (número de celdas que ocupa)
-    string nombre; // Nombre del barco (ej. "Submarino")
+    int tamano;
+    string nombre;
 };
 
-// Lista de barcos disponibles en el juego
 vector<Barco> barcos = {
-    {4, "Porta Aviones"}, // Barco de tamaño 4
-    {3, "Submarino"}, // Barco de tamaño 3
-    {3, "Crucero"}, // Barco de tamaño 3
-    {2, "Lancha"}, // Barco de tamaño 2
-    {1, "Kayak"} // Barco de tamaño 1
+    {4, "Porta Aviones"},
+    {3, "Submarino"},
+    {3, "Crucero"},
+    {2, "Lancha"},
+    {1, "Kayak"}
 };
 
-// Alias para representar un tablero como una matriz bidimensional de caracteres
 typedef vector<vector<char>> Tablero;
 
 // Función para limpiar la pantalla usando secuencia ANSI
 void limpiarPantalla() {
-    cout << "\033[2J\033[H"; // Limpia la pantalla y mueve el cursor al inicio
+    cout << "\033[2J\033[H";
 }
 
 // Prototipos de funciones
-void inicializarTablero(Tablero& tablero); // Inicializa el tablero con celdas vacías
-void mostrarTablero(const Tablero& tablero, bool ocultarBarcos); // Muestra el tablero en la consola
-bool puedeColocarBarco(const Tablero& tablero, int r, int c, int tamano, bool horizontal); // Verifica si un barco puede colocarse
-void colocarBarco(Tablero& tablero, int r, int c, int tamano, bool horizontal); // Coloca un barco en el tablero
-void colocarBarcosJugador(Tablero& tablero); // Permite al jugador colocar sus barcos
-bool colocarBarcoAleatorio(Tablero& tablero, int tamano); // Coloca un barco aleatoriamente
-void colocarBarcosComputadora(Tablero& tablero); // Coloca los barcos de la computadora
-bool todosBarcosHundidos(const Tablero& tablero); // Verifica si todos los barcos han sido hundidos
-string turnoJugador(Tablero& tableroComputadora, Tablero& vistaComputadora); // Turno del jugador para atacar
-string turnoComputadora(Tablero& tableroJugador, set<pair<int, int>>& ataquesRealizados); // Turno de la computadora para atacar
+void inicializarTablero(Tablero& tablero);
+void mostrarTablero(const Tablero& tablero, bool ocultarBarcos);
+bool puedeColocarBarco(const Tablero& tablero, int r, int c, int tamano, bool horizontal);
+void colocarBarco(Tablero& tablero, int r, int c, int tamano, bool horizontal);
+void colocarBarcosJugador(Tablero& tablero);
+bool colocarBarcoAleatorio(Tablero& tablero, int tamano);
+void colocarBarcosComputadora(Tablero& tablero);
+bool todosBarcosHundidos(const Tablero& tablero);
+string turnoJugador(Tablero& tableroComputadora, Tablero& vistaComputadora);
+string turnoComputadora(Tablero& tableroJugador, set<pair<int, int>>& ataquesRealizados);
 
 int main() {
-    srand(static_cast<unsigned int>(time(nullptr))); // Inicializa la semilla para números aleatorios
+    srand(static_cast<unsigned int>(time(nullptr))); // Semilla para aleatorios
 
-    // Tableros para el jugador y la computadora
     Tablero tableroJugador, tableroComputadora, vistaComputadora;
-    inicializarTablero(tableroJugador); // Inicializa el tablero del jugador con celdas vacías
-    inicializarTablero(tableroComputadora); // Inicializa el tablero de la computadora con celdas vacías
-    inicializarTablero(vistaComputadora); // Inicializa la vista del jugador sobre el tablero de la computadora
+    inicializarTablero(tableroJugador);
+    inicializarTablero(tableroComputadora);
+    inicializarTablero(vistaComputadora);
 
-    // Colocar barcos del jugador y de la computadora
-    colocarBarcosJugador(tableroJugador); // Permite al jugador colocar sus barcos
-    colocarBarcosComputadora(tableroComputadora); // Coloca los barcos de la computadora aleatoriamente
+    // Colocar barcos jugador y computadora
+    colocarBarcosJugador(tableroJugador);
+    colocarBarcosComputadora(tableroComputadora);
 
-    // Variables para almacenar ataques y mensajes
-    set<pair<int, int>> ataquesComputadora; // Almacena las coordenadas de los ataques realizados por la computadora
-    string mensajeAtaqueComputadora;  // Mensaje del último ataque de la computadora
-    string mensajeTurnoJugador;       // Mensaje del último ataque del jugador
+    set<pair<int, int>> ataquesComputadora; // Para ataques ya realizados
+    string mensajeAtaqueComputadora;  // Mensaje para mostrar debajo tablero Oponente
+    string mensajeTurnoJugador;       // Mensaje para mostrar debajo tablero Computadora
 
-    cout << "\n¡Comienza el juego de Batalla Naval!\n"; // Mensaje inicial del juego
+    cout << "\n¡Comienza el juego de Batalla Naval!\n";
 
     // Bucle principal del juego
     while (true) {
-        limpiarPantalla(); // Limpia la pantalla antes de mostrar los tableros
+        limpiarPantalla();
 
-        // Mostrar el tablero del jugador
+        // Mostrar tableros
         cout << "Tu Tablero:" << endl;
-        mostrarTablero(tableroJugador, false); // Muestra todos los barcos y estados del jugador
+        mostrarTablero(tableroJugador, false);  // mostrar barcos y estados
 
-        // Mostrar el tablero de la computadora (sin revelar barcos)
         cout << "\nTablero del Oponente (lo que tu ves):" << endl;
-        mostrarTablero(vistaComputadora, true); // Oculta los barcos de la computadora
+        mostrarTablero(vistaComputadora, true); // ocultar barcos
 
-        // Mostrar mensajes de los últimos ataques
+        // Mostrar mensajes debajo de tableros
         if (!mensajeTurnoJugador.empty()) {
-            cout << "\n(Jugador): " << mensajeTurnoJugador << endl; // Muestra el mensaje del último ataque del jugador
+            cout << "\n(Jugador): " << mensajeTurnoJugador << endl;
         }
         if (!mensajeAtaqueComputadora.empty()) {
-            cout << "\n(Computadora): " << mensajeAtaqueComputadora << endl; // Muestra el mensaje del último ataque de la computadora
+            cout << "\n(Computadora): " << mensajeAtaqueComputadora << endl;
         }
         cout << endl;
 
-        // Turno del jugador
-        mensajeTurnoJugador = turnoJugador(tableroComputadora, vistaComputadora); // Ejecuta el turno del jugador
-        if (todosBarcosHundidos(tableroComputadora)) { // Verifica si el jugador ganó
-            limpiarPantalla(); // Limpia la pantalla antes de mostrar los resultados finales
+        // Turno jugador
+        mensajeTurnoJugador = turnoJugador(tableroComputadora, vistaComputadora);
+        if (todosBarcosHundidos(tableroComputadora)) {
+            limpiarPantalla();
             cout << "Tu Tablero Final:" << endl;
-            mostrarTablero(tableroJugador, false); // Muestra el tablero final del jugador
+            mostrarTablero(tableroJugador, false);
             cout << "\nTablero Final del Oponente:" << endl;
-            mostrarTablero(tableroComputadora, false); // Muestra el tablero final de la computadora
+            mostrarTablero(tableroComputadora, false);
             cout << "\n¡Felicidades! Hundiste todos los barcos del oponente. ¡Ganaste!" << endl;
-            break; // Termina el juego
+            break;
         }
 
-        limpiarPantalla(); // Limpia la pantalla antes del turno de la computadora
+        limpiarPantalla();
 
-        // Turno de la computadora
         cout << "Turno de la computadora..." << endl;
-        mensajeAtaqueComputadora = turnoComputadora(tableroJugador, ataquesComputadora); // Ejecuta el turno de la computadora
-        if (todosBarcosHundidos(tableroJugador)) { // Verifica si la computadora ganó
-            limpiarPantalla(); // Limpia la pantalla antes de mostrar los resultados finales
+        mensajeAtaqueComputadora = turnoComputadora(tableroJugador, ataquesComputadora);
+        if (todosBarcosHundidos(tableroJugador)) {
+            limpiarPantalla();
             cout << "Tablero Final:" << endl;
-            mostrarTablero(tableroJugador, false); // Muestra el tablero final del jugador
+            mostrarTablero(tableroJugador, false);
             cout << "\nTablero Final del Oponente:" << endl;
-            mostrarTablero(tableroComputadora, false); // Muestra el tablero final de la computadora
+            mostrarTablero(tableroComputadora, false);
             cout << "\n¡Todos tus barcos han sido hundidos. Perdiste!" << endl;
-            break; // Termina el juego
+            break;
         }
     }
 
-    return 0; // Finaliza el programa
+    return 0;
 }
 
-// Inicializa el tablero con celdas vacías
 void inicializarTablero(Tablero& tablero) {
-    tablero.resize(TAMANO_TABLERO, vector<char>(TAMANO_TABLERO, CELDA_VACIA)); // cambia el tablero y lo llena con celdas vacías
+    tablero.resize(TAMANO_TABLERO, vector<char>(TAMANO_TABLERO, CELDA_VACIA));
 }
 
-// Muestra el tablero en la consola
 void mostrarTablero(const Tablero& tablero, bool ocultarBarcos) {
     cout << "  ";
     for (int c = 0; c < TAMANO_TABLERO; ++c)
-        cout << " " << c + 1; // Imprime los números de las columnas
+        cout << " " << c + 1;
     cout << endl;
 
     for (int r = 0; r < TAMANO_TABLERO; ++r) {
-        cout << char('A' + r) << " "; // Imprime las letras de las filas
+        cout << char('A' + r) << " ";
         for (int c = 0; c < TAMANO_TABLERO; ++c) {
             char celda = tablero[r][c];
             if (ocultarBarcos && celda == CELDA_BARCO)
-                cout << " " << CELDA_VACIA; // Oculta los barcos
+                cout << " " << CELDA_VACIA; // Oculta barcos
             else
-                cout << " " << celda; // Muestra el contenido de la celda
+                cout << " " << celda;
         }
         cout << endl;
     }
 }
 
-// Verifica si un barco puede colocarse en una posición específica
 bool puedeColocarBarco(const Tablero& tablero, int r, int c, int tamano, bool horizontal) {
     if (horizontal) {
-        if (c + tamano > TAMANO_TABLERO) return false; // Verifica si el barco cabe horizontalmente
+        if (c + tamano > TAMANO_TABLERO) return false;
         for (int i = 0; i < tamano; ++i) {
-            if (tablero[r][c + i] != CELDA_VACIA) return false; // Verifica que las celdas estén vacías
+            if (tablero[r][c + i] != CELDA_VACIA) return false;
         }
     }
     else {
-        if (r + tamano > TAMANO_TABLERO) return false; // Verifica si el barco cabe verticalmente
+        if (r + tamano > TAMANO_TABLERO) return false;
         for (int i = 0; i < tamano; ++i) {
-            if (tablero[r + i][c] != CELDA_VACIA) return false; // Verifica que las celdas estén vacías
+            if (tablero[r + i][c] != CELDA_VACIA) return false;
         }
     }
-    return true; // Retorna true si el barco puede colocarse
+    return true;
 }
 
-// Coloca un barco en el tablero
 void colocarBarco(Tablero& tablero, int r, int c, int tamano, bool horizontal) {
     if (horizontal) {
         for (int i = 0; i < tamano; ++i) {
-            tablero[r][c + i] = CELDA_BARCO; // Marca las celdas ocupadas por el barco
+            tablero[r][c + i] = CELDA_BARCO;
         }
     }
     else {
         for (int i = 0; i < tamano; ++i) {
-            tablero[r + i][c] = CELDA_BARCO; // Marca las celdas ocupadas por el barco
+            tablero[r + i][c] = CELDA_BARCO;
         }
     }
 }
 
-// Turno del jugador para atacar
+bool colocarBarcoAleatorio(Tablero& tablero, int tamano) {
+    for (int intentos = 0; intentos < 100; ++intentos) {
+        int fila = rand() % TAMANO_TABLERO;
+        int columna = rand() % TAMANO_TABLERO;
+        bool horizontal = rand() % 2 == 0;
+
+        if (puedeColocarBarco(tablero, fila, columna, tamano, horizontal)) {
+            colocarBarco(tablero, fila, columna, tamano, horizontal);
+            return true;
+        }
+    }
+    return false;
+}
+
+void colocarBarcosJugador(Tablero& tablero) {
+    for (auto& barco : barcos) {
+        bool colocado = false;
+        while (!colocado) {
+            limpiarPantalla();
+            cout << "Coloca tus barcos en el tablero." << endl;
+            mostrarTablero(tablero, false);
+            cout << "\nColoca tu " << barco.nombre << " (tamano " << barco.tamano << ")." << endl;
+            cout << "Ingresa la posicion (ej. A1) o 'A' para colocar aleatoriamente: ";
+            string entrada;
+            cin >> entrada;
+
+            if (entrada.length() == 1 && (entrada[0] == 'A' || entrada[0] == 'a')) {
+                if (colocarBarcoAleatorio(tablero, barco.tamano)) {
+                    colocado = true;
+                }
+                else {
+                    cout << "No se pudo colocar aleatoriamente el barco. Intenta manualmente." << endl;
+                }
+                continue;
+            }
+
+            if (entrada.length() < 2 || !isalpha(entrada[0]) || !isdigit(entrada[1])) {
+                cout << "Entrada invalida. Intenta de nuevo." << endl;
+                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                continue;
+            }
+
+            int fila = toupper(entrada[0]) - 'A';
+            int columna;
+            try {
+                columna = stoi(entrada.substr(1)) - 1;
+            }
+            catch (invalid_argument&) {
+                cout << "Entrada invalida. Intenta de nuevo." << endl;
+                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                continue;
+            }
+
+            if (fila < 0 || fila >= TAMANO_TABLERO || columna < 0 || columna >= TAMANO_TABLERO) {
+                cout << "Coordenadas fuera de rango. Intenta de nuevo." << endl;
+                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                continue;
+            }
+
+            cout << "Horizontal (h) o vertical (v)? ";
+            char dir;
+            cin >> dir;
+            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            bool horizontal = (tolower(dir) == 'h');
+
+            if (!puedeColocarBarco(tablero, fila, columna, barco.tamano, horizontal)) {
+                cout << "No se puede colocar el barco aqui. Intenta de nuevo." << endl;
+                continue;
+            }
+
+            colocarBarco(tablero, fila, columna, barco.tamano, horizontal);
+            colocado = true;
+        }
+    }
+}
+
+void colocarBarcosComputadora(Tablero& tablero) {
+    for (auto& barco : barcos) {
+        bool colocado = false;
+        while (!colocado) {
+            int fila = rand() % TAMANO_TABLERO;
+            int columna = rand() % TAMANO_TABLERO;
+            bool horizontal = rand() % 2 == 0;
+            if (puedeColocarBarco(tablero, fila, columna, barco.tamano, horizontal)) {
+                colocarBarco(tablero, fila, columna, barco.tamano, horizontal);
+                colocado = true;
+            }
+        }
+    }
+}
+
+bool todosBarcosHundidos(const Tablero& tablero) {
+    for (int r = 0; r < TAMANO_TABLERO; ++r) {
+        for (int c = 0; c < TAMANO_TABLERO; ++c) {
+            if (tablero[r][c] == CELDA_BARCO) return false;
+        }
+    }
+    return true;
+}
+
 string turnoJugador(Tablero& tableroComputadora, Tablero& vistaComputadora) {
     while (true) {
         cout << "Ingresa el objetivo a atacar (ej. B3): ";
         string pos;
-        cin >> pos; // Lee la posición ingresada por el jugador
+        cin >> pos;
 
-        if (pos.length() < 2 || !isalpha(pos[0]) || !isdigit(pos[1])) { // Verifica si la entrada es válida
+        if (pos.length() < 2 || !isalpha(pos[0]) || !isdigit(pos[1])) {
             cout << "Entrada invalida. Intenta de nuevo." << endl;
-            continue; // Pide al jugador que intente de nuevo
+            continue;
         }
 
-        int fila = toupper(pos[0]) - 'A'; // Convierte la letra a mayúscula y la convierte en índice de fila
+        int fila = toupper(pos[0]) - 'A';
         int columna;
         try {
-            columna = stoi(pos.substr(1)) - 1; // Convierte el número ingresado en índice de columna
+            columna = stoi(pos.substr(1)) - 1;
         }
         catch (invalid_argument&) {
             cout << "Entrada invalida. Intenta de nuevo." << endl;
-            continue; // Pide al jugador que intente de nuevo
+            continue;
         }
 
-        if (fila < 0 || fila >= TAMANO_TABLERO || columna < 0 || columna >= TAMANO_TABLERO) { // Verifica si las coordenadas están dentro del rango
+        if (fila < 0 || fila >= TAMANO_TABLERO || columna < 0 || columna >= TAMANO_TABLERO) {
             cout << "Coordenadas fuera de rango. Intenta de nuevo." << endl;
-            continue; // Pide al jugador que intente de nuevo
+            continue;
         }
 
-        if (vistaComputadora[fila][columna] == CELDA_IMPACTO || vistaComputadora[fila][columna] == CELDA_FALLO) { // Verifica si la celda ya fue atacada
+        if (vistaComputadora[fila][columna] == CELDA_IMPACTO || vistaComputadora[fila][columna] == CELDA_FALLO) {
             cout << "Ya atacaste esta posicion. Elige otra." << endl;
-            continue; // Pide al jugador que intente de nuevo
+            continue;
         }
 
         string mensaje = "Procesando ataque en ";
-        mensaje += char('A' + fila); // Agrega la letra de la fila al mensaje
-        mensaje += to_string(columna + 1); // Agrega el número de la columna al mensaje
+        mensaje += char('A' + fila);
+        mensaje += to_string(columna + 1);
         mensaje += "... ";
 
-        if (tableroComputadora[fila][columna] == CELDA_BARCO) { // Verifica si el ataque impactó un barco
-            tableroComputadora[fila][columna] = CELDA_IMPACTO; // Marca la celda como impactada
-            vistaComputadora[fila][columna] = CELDA_IMPACTO; // Actualiza la vista del jugador
-            mensaje += "Barco impactado!"; // Agrega el mensaje de impacto
-        }
-        else { // Si el ataque no impactó un barco
-            vistaComputadora[fila][columna] = CELDA_FALLO; // Marca la celda como fallo
-            mensaje += "Agua."; // Agrega el mensaje de fallo
-        }
-
-        return mensaje; // Retorna el mensaje del resultado del ataque
-    }
-}
-
-// Turno de la computadora para atacar
-string turnoComputadora(Tablero& tableroJugador, set<pair<int, int >>& ataquesRealizados) {
-    while (true) {
-        int fila = rand() % TAMANO_TABLERO; // Genera una fila aleatoria
-        int columna = rand() % TAMANO_TABLERO; // Genera una columna aleatoria
-
-        if (ataquesRealizados.count({ fila, columna }) > 0) continue; // Verifica si la celda ya fue atacada
-
-        ataquesRealizados.insert({ fila, columna }); // Agrega la celda a la lista de ataques realizados
-
-        string mensaje = "La computadora te ataco en ";
-        mensaje += char('A' + fila); // Agrega la letra de la fila al mensaje
-        mensaje += to_string(columna + 1); // Agrega el número de la columna al mensaje
-        mensaje += ". ";
-
-        if (tableroJugador[fila][columna] == CELDA_BARCO) { // Verifica si el ataque impactó un barco
-            mensaje += "¡La computadora impacto tu barco!"; // Agrega el mensaje de impacto
-            tableroJugador[fila][columna] = CELDA_IMPACTO; // Marca la celda como impactada
-        }
-        else if (tableroJugador[fila][columna] == CELDA_VACIA) { // Verifica si el ataque falló
-            mensaje += "La computadora fallo."; // Agrega el mensaje de fallo
-            tableroJugador[fila][columna] = CELDA_FALLO; // Marca la celda como fallo
+        if (tableroComputadora[fila][columna] == CELDA_BARCO) {
+            tableroComputadora[fila][columna] = CELDA_IMPACTO;
+            vistaComputadora[fila][columna] = CELDA_IMPACTO;
+            mensaje += "Barco impactado!";
         }
         else {
-            continue; // Si la celda ya fue atacada, genera nuevas coordenadas
+            vistaComputadora[fila][columna] = CELDA_FALLO;
+            mensaje += "Agua.";
         }
 
-        return mensaje; // Retorna el mensaje del resultado del ataque
+        return mensaje;
     }
 }
 
+string turnoComputadora(Tablero& tableroJugador, set<pair<int, int >>& ataquesRealizados) {
+    while (true) {
+        int fila = rand() % TAMANO_TABLERO;
+        int columna = rand() % TAMANO_TABLERO;
+
+        if (ataquesRealizados.count({ fila, columna }) > 0) continue;
+
+        ataquesRealizados.insert({ fila, columna });
+
+        string mensaje = "La computadora te ataco en ";
+        mensaje += char('A' + fila);
+        mensaje += to_string(columna + 1);
+        mensaje += ". ";
+
+        if (tableroJugador[fila][columna] == CELDA_BARCO) {
+            mensaje += "¡La computadora impacto tu barco!";
+            tableroJugador[fila][columna] = CELDA_IMPACTO;
+        }
+        else if (tableroJugador[fila][columna] == CELDA_VACIA) {
+            mensaje += "La computadora fallo.";
+            tableroJugador[fila][columna] = CELDA_FALLO;
+        }
+        else {
+            continue;
+        }
+
+        return mensaje;
+    }
+}
