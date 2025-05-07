@@ -94,6 +94,6 @@ La computadora ataca una posición aleatoria que no haya usado antes. Registra y
 
 © Nicolas Cabanillas y Sebastián Revuelta.  
 Todos los derechos reservados.  
-Prohibida la reproducción o modificación sin autorización de los autores.
+Prohibida la modificación sin autorización de los autores.
 
 ---
