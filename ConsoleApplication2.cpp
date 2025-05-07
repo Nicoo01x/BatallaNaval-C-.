@@ -229,7 +229,7 @@ void colocarBarcosJugador(Tablero& tablero) {
             cout << "Horizontal (h) o vertical (v)? ";
             char dir;
             cin >> dir;
-            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); 
             bool horizontal = (tolower(dir) == 'h');
 
             if (!puedeColocarBarco(tablero, fila, columna, barco.tamano, horizontal)) {
@@ -246,7 +246,7 @@ void colocarBarcosJugador(Tablero& tablero) {
 void colocarBarcosComputadora(Tablero& tablero) {
     for (auto& barco : barcos) {
         bool colocado = false;
-		while (!colocado) { // ! es una negacion, si colocado es true entra al bucle
+		while (!colocado) { // ! es una negacion, si colocado es falso entra al bucle
             int fila = rand() % TAMANO_TABLERO;
             int columna = rand() % TAMANO_TABLERO;
             bool horizontal = rand() % 2 == 0;
@@ -346,3 +346,8 @@ string turnoComputadora(Tablero& tableroJugador, set<pair<int, int >>& ataquesRe
         return mensaje;
     }
 }
+
+// Derechos Reservados © 2025. 
+// Autor: Nicolás Cabanillas y Sebastian Revuelta.
+// Universidad Blas Pascal.
+// Este programa es de unico fin educativo y no comercial.
