@@ -4,7 +4,8 @@
 #include <cstdlib>
 #include <cctype> // Para toupper y tolower
 #include <stdexcept> // Para manejar excepciones de stoi
-#include <string> // Para usar std::stoi
+#include <string> 
+#include <set>
 
 using namespace std;
 
@@ -38,37 +39,40 @@ void colocarBarcosJugador(Tablero& tablero);
 void colocarBarcosOrdenador(Tablero& tablero);
 bool todosBarcosHundidos(const Tablero& tablero);
 void turnoJugador(Tablero& tableroOrdenador, Tablero& vistaOrdenador);
-void turnoOrdenador(Tablero& tableroJugador);
+void turnoOrdenador(Tablero& tableroJugador, set<pair<int, int>>& ataquesRealizados);
 
 int main() {
-    srand(static_cast<unsigned int>(time(nullptr))); // Solucion a C4244
+    srand(static_cast<unsigned int>(time(nullptr))); // Semilla para aleatorios
 
     Tablero tableroJugador, tableroOrdenador, vistaOrdenador;
     inicializarTablero(tableroJugador);
     inicializarTablero(tableroOrdenador);
     inicializarTablero(vistaOrdenador);
 
-    cout << "Bienvenido a Batalla Naval!" << endl;
     colocarBarcosJugador(tableroJugador);
     colocarBarcosOrdenador(tableroOrdenador);
 
+    set<pair<int, int>> ataquesComputadora; // Para evitar ataques repetidos de la computadora
+
+    cout << "\n¡Comienza el juego de Batalla Naval!\n";
+
     while (true) {
         cout << "\nTu Tablero:" << endl;
-        mostrarTablero(tableroJugador, false);
+        mostrarTablero(tableroJugador, false);  // Muestra todos los barcos y estados
 
-        cout << "\nTablero del Ordenador:" << endl;
-        mostrarTablero(vistaOrdenador, true);
+        cout << "\nTablero del Oponente (lo que tú ves):" << endl;
+        mostrarTablero(vistaOrdenador, true); // Ocultar barcos del ordenador, mostrar impactos y fallos
 
         turnoJugador(tableroOrdenador, vistaOrdenador);
         if (todosBarcosHundidos(tableroOrdenador)) {
-            cout << "Felicidades! Hundiste todos los barcos del oponente. Ganaste!" << endl;
+            cout << "\n¡Felicidades! Hundiste todos los barcos del oponente. ¡Ganaste!" << endl;
             break;
         }
 
         cout << "\nTurno de la computadora..." << endl;
-        turnoOrdenador(tableroJugador);
+        turnoOrdenador(tableroJugador, ataquesComputadora);
         if (todosBarcosHundidos(tableroJugador)) {
-            cout << "Todos tus barcos han sido hundidos. Perdiste!" << endl;
+            cout << "\n¡Todos tus barcos han sido hundidos. Perdiste!" << endl;
             break;
         }
     }
@@ -82,7 +86,6 @@ int main() {
     return 0;
 }
 
-// Definiciones de funciones
 void inicializarTablero(Tablero& tablero) {
     tablero.resize(TAMANO_TABLERO, vector<char>(TAMANO_TABLERO, CELDA_VACIA));
 }
@@ -98,7 +101,7 @@ void mostrarTablero(const Tablero& tablero, bool ocultarBarcos) {
         for (int c = 0; c < TAMANO_TABLERO; ++c) {
             char celda = tablero[r][c];
             if (ocultarBarcos && celda == CELDA_BARCO)
-                cout << " " << CELDA_VACIA;
+                cout << " " << CELDA_VACIA; // Oculta barcos para que no se vean por el jugador
             else
                 cout << " " << celda;
         }
@@ -253,14 +256,16 @@ void turnoJugador(Tablero& tableroOrdenador, Tablero& vistaOrdenador) {
     }
 }
 
-void turnoOrdenador(Tablero& tableroJugador) {
+void turnoOrdenador(Tablero& tableroJugador, set<pair<int, int>>& ataquesRealizados) {
     while (true) {
         int fila = rand() % TAMANO_TABLERO;
         int columna = rand() % TAMANO_TABLERO;
 
-        if (tableroJugador[fila][columna] == CELDA_IMPACTO || tableroJugador[fila][columna] == CELDA_FALLO) {
+        // Evitar repetir ataque
+        if (ataquesRealizados.count({ fila, columna }) > 0)
             continue;
-        }
+
+        ataquesRealizados.insert({ fila,columna });
 
         cout << "La computadora te atacó en " << char('A' + fila) << (columna + 1) << "." << endl;
 
@@ -268,11 +273,17 @@ void turnoOrdenador(Tablero& tableroJugador) {
             cout << "La computadora impactó tu barco!" << endl;
             tableroJugador[fila][columna] = CELDA_IMPACTO;
         }
-        else {
+        else if (tableroJugador[fila][columna] == CELDA_VACIA) {
             cout << "La computadora falló." << endl;
             tableroJugador[fila][columna] = CELDA_FALLO;
+        }
+        else {
+            // Hay impacto o fallo previo, pero debe haberse evitado atacar la misma posición arriba
+            // Así que no debería entrar aquí, solo seguimos el bucle para elegir otra posición.
+            continue;
         }
 
         break;
     }
 }
+
