@@ -41,6 +41,7 @@ void mostrarTablero(const Tablero& tablero, bool ocultarBarcos);
 bool puedeColocarBarco(const Tablero& tablero, int r, int c, int tamano, bool horizontal);
 void colocarBarco(Tablero& tablero, int r, int c, int tamano, bool horizontal);
 void colocarBarcosJugador(Tablero& tablero);
+bool colocarBarcoAleatorio(Tablero& tablero, int tamano);
 void colocarBarcosOrdenador(Tablero& tablero);
 bool todosBarcosHundidos(const Tablero& tablero);
 void turnoJugador(Tablero& tableroOrdenador, Tablero& vistaOrdenador);
@@ -158,6 +159,20 @@ void colocarBarco(Tablero& tablero, int r, int c, int tamano, bool horizontal) {
     }
 }
 
+bool colocarBarcoAleatorio(Tablero& tablero, int tamano) {
+    for (int intentos = 0; intentos < 100; ++intentos) { // Limitar intentos para evitar loops infinitos
+        int fila = rand() % TAMANO_TABLERO;
+        int columna = rand() % TAMANO_TABLERO;
+        bool horizontal = rand() % 2 == 0;
+
+        if (puedeColocarBarco(tablero, fila, columna, tamano, horizontal)) {
+            colocarBarco(tablero, fila, columna, tamano, horizontal);
+            return true; // Colocado exitosamente
+        }
+    }
+    return false; // No se pudo colocar en 100 intentos (muy improbable)
+}
+
 void colocarBarcosJugador(Tablero& tablero) {
     for (auto& barco : barcos) {
         bool colocado = false;
@@ -166,19 +181,32 @@ void colocarBarcosJugador(Tablero& tablero) {
             cout << "Coloca tus barcos en el tablero." << endl;
             mostrarTablero(tablero, false);
             cout << "Coloca tu " << barco.nombre << " (tamano " << barco.tamano << ")." << endl;
-            cout << "Ingresa la posicion (ej. A1): ";
-            string pos;
-            cin >> pos;
+            cout << "Ingresa la posicion (ej. A1) o 'A' para colocar aleatoriamente: ";
+            string entrada;
+            cin >> entrada;
 
-            if (pos.length() < 2 || !isalpha(pos[0]) || !isdigit(pos[1])) {
+            if (entrada.length() == 1 && (entrada[0] == 'A' || entrada[0] == 'a')) {
+                // Colocación aleatoria
+                if (colocarBarcoAleatorio(tablero, barco.tamano)) {
+                    colocado = true;
+                }
+                else {
+                    cout << "No se pudo colocar aleatoriamente el barco. Intenta manualmente." << endl;
+                    // Seguir en el ciclo para permitir intentarlo manual
+                }
+                continue;
+            }
+
+            // Colocación manual
+            if (entrada.length() < 2 || !isalpha(entrada[0]) || !isdigit(entrada[1])) {
                 cout << "Entrada invalida. Intenta de nuevo." << endl;
                 continue;
             }
 
-            int fila = toupper(pos[0]) - 'A';
+            int fila = toupper(entrada[0]) - 'A';
             int columna;
             try {
-                columna = stoi(pos.substr(1)) - 1;
+                columna = stoi(entrada.substr(1)) - 1;
             }
             catch (invalid_argument&) {
                 cout << "Entrada invalida. Intenta de nuevo." << endl;
@@ -199,6 +227,7 @@ void colocarBarcosJugador(Tablero& tablero) {
                 cout << "No se puede colocar el barco aqui. Intenta de nuevo." << endl;
                 continue;
             }
+
             colocarBarco(tablero, fila, columna, barco.tamano, horizontal);
             colocado = true;
         }
@@ -299,7 +328,6 @@ void turnoOrdenador(Tablero& tableroJugador, set<pair<int, int>>& ataquesRealiza
             tableroJugador[fila][columna] = CELDA_FALLO;
         }
         else {
-            // Si ya estaba atacado, sigue buscando una nueva posición
             continue;
         }
 
