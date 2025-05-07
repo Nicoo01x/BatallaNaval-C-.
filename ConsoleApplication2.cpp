@@ -305,7 +305,7 @@ void turnoJugador(Tablero& tableroOrdenador, Tablero& vistaOrdenador) {
     }
 }
 
-void turnoOrdenador(Tablero& tableroJugador, set<pair<int, int>>& ataquesRealizados, string& mensajeAtaque) {
+void turnoOrdenador(Tablero& tableroJugador, set<pair<int, int >> & ataquesRealizados, string& mensajeAtaque) {
     while (true) {
         int fila = rand() % TAMANO_TABLERO;
         int columna = rand() % TAMANO_TABLERO;
