@@ -1,4 +1,4 @@
-#include <iostream>
+ï»¿#include <iostream>
 #include <vector>
 #include <ctime>
 #include <cstdlib>
@@ -27,7 +27,6 @@ vector<Barco> barcos = {
     {1, "Kayak"}
 };
 
-// Tablero representado como una matriz 2D de caracteres
 typedef vector<vector<char>> Tablero;
 
 // Prototipos de funciones
@@ -54,22 +53,18 @@ int main() {
     colocarBarcosOrdenador(tableroOrdenador);
 
     while (true) {
-        // Mostrar el tablero del jugador
         cout << "\nTu Tablero:" << endl;
         mostrarTablero(tableroJugador, false);
 
-        // Mostrar el tablero del ordenador (sin revelar barcos)
         cout << "\nTablero del Ordenador:" << endl;
         mostrarTablero(vistaOrdenador, true);
 
-        // Turno del jugador
         turnoJugador(tableroOrdenador, vistaOrdenador);
         if (todosBarcosHundidos(tableroOrdenador)) {
             cout << "Felicidades! Hundiste todos los barcos del oponente. Ganaste!" << endl;
             break;
         }
 
-        // Turno del ordenador
         cout << "\nTurno de la computadora..." << endl;
         turnoOrdenador(tableroJugador);
         if (todosBarcosHundidos(tableroJugador)) {
@@ -78,8 +73,7 @@ int main() {
         }
     }
 
-    // Mostrar los tableros finales
-    cout << "Tableros Finales:" << endl;
+    cout << "\nTableros Finales:" << endl;
     cout << "Tu Tablero:" << endl;
     mostrarTablero(tableroJugador, false);
     cout << "Tablero del Ordenador:" << endl;
@@ -88,6 +82,7 @@ int main() {
     return 0;
 }
 
+// Definiciones de funciones
 void inicializarTablero(Tablero& tablero) {
     tablero.resize(TAMANO_TABLERO, vector<char>(TAMANO_TABLERO, CELDA_VACIA));
 }
@@ -242,15 +237,18 @@ void turnoJugador(Tablero& tableroOrdenador, Tablero& vistaOrdenador) {
             continue;
         }
 
+        cout << "Procesando ataque en " << char('A' + fila) << (columna + 1) << "..." << endl;
+
         if (tableroOrdenador[fila][columna] == CELDA_BARCO) {
-            cout << "Barco!" << endl; // Mensaje cuando el ataque impacta un barco
+            cout << "Barco impactado!" << endl;
             tableroOrdenador[fila][columna] = CELDA_IMPACTO;
             vistaOrdenador[fila][columna] = CELDA_IMPACTO;
         }
         else {
-            cout << "Agua." << endl; // Mensaje cuando el ataque falla
+            cout << "Agua." << endl;
             vistaOrdenador[fila][columna] = CELDA_FALLO;
         }
+
         break;
     }
 }
@@ -261,20 +259,20 @@ void turnoOrdenador(Tablero& tableroJugador) {
         int columna = rand() % TAMANO_TABLERO;
 
         if (tableroJugador[fila][columna] == CELDA_IMPACTO || tableroJugador[fila][columna] == CELDA_FALLO) {
-            continue; // ya atacado
+            continue;
         }
 
-        cout << "La computadora te atacó en " << char('A' + fila) << (columna + 1) << "." << endl;
+        cout << "La computadora te atacÃ³ en " << char('A' + fila) << (columna + 1) << "." << endl;
 
         if (tableroJugador[fila][columna] == CELDA_BARCO) {
-            cout << "La computadora impactó tu barco!" << endl;
+            cout << "La computadora impactÃ³ tu barco!" << endl;
             tableroJugador[fila][columna] = CELDA_IMPACTO;
         }
         else {
-            cout << "La computadora falló." << endl;
+            cout << "La computadora fallÃ³." << endl;
             tableroJugador[fila][columna] = CELDA_FALLO;
         }
+
         break;
     }
 }
-//prueba
