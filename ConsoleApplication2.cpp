@@ -317,7 +317,7 @@ string turnoJugador(Tablero& tableroComputadora, Tablero& vistaComputadora) {
     }
 }
 
-string turnoComputadora(Tablero& tableroJugador, set<pair<int, int >>& ataquesRealizados) {
+string turnoComputadora(Tablero& tableroJugador, set<pair<int, int >>& ataquesRealizados) { //set pair<int, int> es un contenedor que almacena pares de enteros y no permite duplicados
     while (true) {
         int fila = rand() % TAMANO_TABLERO;
         int columna = rand() % TAMANO_TABLERO;
