@@ -277,3 +277,4 @@ void turnoOrdenador(Tablero& tableroJugador) {
         break;
     }
 }
+//prueba
