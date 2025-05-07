@@ -246,7 +246,7 @@ void colocarBarcosJugador(Tablero& tablero) {
 void colocarBarcosComputadora(Tablero& tablero) {
     for (auto& barco : barcos) {
         bool colocado = false;
-        while (!colocado) {
+		while (!colocado) { // ! es una negacion, si colocado es true entra al bucle
             int fila = rand() % TAMANO_TABLERO;
             int columna = rand() % TAMANO_TABLERO;
             bool horizontal = rand() % 2 == 0;
