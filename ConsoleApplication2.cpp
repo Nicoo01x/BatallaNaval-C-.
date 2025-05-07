@@ -44,7 +44,7 @@ void colocarBarcosJugador(Tablero& tablero);
 void colocarBarcosOrdenador(Tablero& tablero);
 bool todosBarcosHundidos(const Tablero& tablero);
 void turnoJugador(Tablero& tableroOrdenador, Tablero& vistaOrdenador);
-void turnoOrdenador(Tablero& tableroJugador, set<pair<int, int>>& ataquesRealizados);
+void turnoOrdenador(Tablero& tableroJugador, set<pair<int, int>>& ataquesRealizados, string& mensajeAtaque);
 
 int main() {
     srand(static_cast<unsigned int>(time(nullptr))); // Semilla para aleatorios
@@ -59,6 +59,7 @@ int main() {
     colocarBarcosOrdenador(tableroOrdenador);
 
     set<pair<int, int>> ataquesComputadora; // Para evitar ataques repetidos de la computadora
+    string mensajeAtaqueComputadora = "";  // Para mostrar abajo del tablero del oponente el mensaje
 
     cout << "\n¡Comienza el juego de Batalla Naval!\n";
 
@@ -71,6 +72,11 @@ int main() {
 
         cout << "\nTablero del Oponente (lo que tú ves):" << endl;
         mostrarTablero(vistaOrdenador, true); // Ocultar barcos del ordenador
+
+        // Mostrar mensaje del último ataque de la computadora
+        if (!mensajeAtaqueComputadora.empty()) {
+            cout << "\nMensaje de la computadora: " << mensajeAtaqueComputadora << endl;
+        }
 
         turnoJugador(tableroOrdenador, vistaOrdenador);
         if (todosBarcosHundidos(tableroOrdenador)) {
@@ -85,7 +91,7 @@ int main() {
 
         limpiarPantalla();
         cout << "\nTurno de la computadora..." << endl;
-        turnoOrdenador(tableroJugador, ataquesComputadora);
+        turnoOrdenador(tableroJugador, ataquesComputadora, mensajeAtaqueComputadora);
         if (todosBarcosHundidos(tableroJugador)) {
             limpiarPantalla();
             cout << "\nTablero Final:" << endl;
@@ -225,8 +231,6 @@ bool todosBarcosHundidos(const Tablero& tablero) {
 
 void turnoJugador(Tablero& tableroOrdenador, Tablero& vistaOrdenador) {
     while (true) {
-        limpiarPantalla();
-        mostrarTablero(vistaOrdenador, false);
         cout << "Ingresa el objetivo a atacar (ej. B3): ";
         string pos;
         cin >> pos;
@@ -272,7 +276,7 @@ void turnoJugador(Tablero& tableroOrdenador, Tablero& vistaOrdenador) {
     }
 }
 
-void turnoOrdenador(Tablero& tableroJugador, set<pair<int, int>>& ataquesRealizados) {
+void turnoOrdenador(Tablero& tableroJugador, set<pair<int, int>>& ataquesRealizados, string& mensajeAtaque) {
     while (true) {
         int fila = rand() % TAMANO_TABLERO;
         int columna = rand() % TAMANO_TABLERO;
@@ -281,18 +285,21 @@ void turnoOrdenador(Tablero& tableroJugador, set<pair<int, int>>& ataquesRealiza
 
         ataquesRealizados.insert({ fila, columna });
 
-        cout << "La computadora te atacó en " << char('A' + fila) << (columna + 1) << "." << endl;
+        mensajeAtaque = "La computadora te atacó en ";
+        mensajeAtaque += char('A' + fila);
+        mensajeAtaque += to_string(columna + 1);
+        mensajeAtaque += ". ";
 
         if (tableroJugador[fila][columna] == CELDA_BARCO) {
-            cout << "La computadora impactó tu barco!" << endl;
+            mensajeAtaque += "¡La computadora impactó tu barco!";
             tableroJugador[fila][columna] = CELDA_IMPACTO;
         }
         else if (tableroJugador[fila][columna] == CELDA_VACIA) {
-            cout << "La computadora falló." << endl;
+            mensajeAtaque += "La computadora falló.";
             tableroJugador[fila][columna] = CELDA_FALLO;
         }
         else {
-            // Ya impactado o fallado antes - evitar
+            // Si ya estaba atacado, sigue buscando una nueva posición
             continue;
         }
 
