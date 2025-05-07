@@ -108,7 +108,7 @@ int main() {
 
         // Turno de la computadora
         cout << "Turno de la computadora..." << endl;
-        mensajeAtaqueComputadora = turnoComputadora(tableroJugador, ataquesComputadora);
+        mensajeAtaqueComputadora = turnoComputadora(tableroJugador, ataquesComputadora); 
         if (todosBarcosHundidos(tableroJugador)) { // Verifica si la computadora ganó
             limpiarPantalla();
             cout << "Tablero Final:" << endl;
