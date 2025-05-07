@@ -6,6 +6,7 @@
 #include <stdexcept> // Para manejar excepciones de stoi
 #include <string> 
 #include <set>
+#include <stack>
 
 using namespace std;
 
@@ -46,6 +47,7 @@ void colocarBarcosComputadora(Tablero& tablero);
 bool todosBarcosHundidos(const Tablero& tablero);
 string turnoJugador(Tablero& tableroComputadora, Tablero& vistaComputadora);
 string turnoComputadora(Tablero& tableroJugador, set<pair<int, int>>& ataquesRealizados);
+bool barcoHundido(const Tablero& tablero, int fila, int columna);
 
 int main() {
     srand(static_cast<unsigned int>(time(nullptr))); // Semilla para aleatorios
@@ -205,7 +207,7 @@ void colocarBarcosJugador(Tablero& tablero) {
 
             if (entrada.length() < 2 || !isalpha(entrada[0]) || !isdigit(entrada[1])) {
                 cout << "Entrada invalida. Intenta de nuevo." << endl;
-                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 continue;
             }
 
@@ -216,20 +218,20 @@ void colocarBarcosJugador(Tablero& tablero) {
             }
             catch (invalid_argument&) {
                 cout << "Entrada invalida. Intenta de nuevo." << endl;
-                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 continue;
             }
 
             if (fila < 0 || fila >= TAMANO_TABLERO || columna < 0 || columna >= TAMANO_TABLERO) {
                 cout << "Coordenadas fuera de rango. Intenta de nuevo." << endl;
-                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 continue;
             }
 
             cout << "Horizontal (h) o vertical (v)? ";
             char dir;
             cin >> dir;
-            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
             bool horizontal = (tolower(dir) == 'h');
 
             if (!puedeColocarBarco(tablero, fila, columna, barco.tamano, horizontal)) {
@@ -264,6 +266,39 @@ bool todosBarcosHundidos(const Tablero& tablero) {
             if (tablero[r][c] == CELDA_BARCO) return false;
         }
     }
+    return true;
+}
+
+// Función para verificar si un barco está hundido empezando desde celda (fila, columna)
+bool barcoHundido(const Tablero& tablero, int fila, int columna) {
+    // Hace DFS para encontrar todos los segmentos del barco conectado (S o X)
+    vector<vector<bool>> visitado(TAMANO_TABLERO, vector<bool>(TAMANO_TABLERO, false));
+    stack<pair<int, int>> pila;
+    pila.push({ fila, columna });
+    visitado[fila][columna] = true;
+
+    while (!pila.empty()) {
+        auto [r, c] = pila.top();
+        pila.pop();
+
+        // Si hay algún segmento sin impactar (CELDA_BARCO), el barco no está hundido
+        if (tablero[r][c] == CELDA_BARCO) return false;
+
+        // Revisar vecinos (arriba, abajo, izquierda, derecha) si están en rango y son CELDA_BARCO o CELDA_IMPACTO
+        const int dr[] = { -1,1,0,0 };
+        const int dc[] = { 0,0,-1,1 };
+        for (int i = 0; i < 4; i++) {
+            int nr = r + dr[i];
+            int nc = c + dc[i];
+            if (nr >= 0 && nr < TAMANO_TABLERO && nc >= 0 && nc < TAMANO_TABLERO
+                && !visitado[nr][nc]
+                && (tablero[nr][nc] == CELDA_BARCO || tablero[nr][nc] == CELDA_IMPACTO)) {
+                visitado[nr][nc] = true;
+                pila.push({ nr,nc });
+            }
+        }
+    }
+    // Si terminó el DFS sin encontrar segmento S sin impactar, barco está hundido
     return true;
 }
 
@@ -306,7 +341,11 @@ string turnoJugador(Tablero& tableroComputadora, Tablero& vistaComputadora) {
         if (tableroComputadora[fila][columna] == CELDA_BARCO) {
             tableroComputadora[fila][columna] = CELDA_IMPACTO;
             vistaComputadora[fila][columna] = CELDA_IMPACTO;
-            mensaje += "Barco impactado!";
+            mensaje += "Barco impactado! ";
+
+            if (barcoHundido(tableroComputadora, fila, columna)) {
+                mensaje += "Barco derrumbado!";
+            }
         }
         else {
             vistaComputadora[fila][columna] = CELDA_FALLO;
@@ -334,6 +373,9 @@ string turnoComputadora(Tablero& tableroJugador, set<pair<int, int >>& ataquesRe
         if (tableroJugador[fila][columna] == CELDA_BARCO) {
             mensaje += "¡La computadora impacto tu barco!";
             tableroJugador[fila][columna] = CELDA_IMPACTO;
+            if (barcoHundido(tableroJugador, fila, columna)) {
+                mensaje += " Barco derrumbado!";
+            }
         }
         else if (tableroJugador[fila][columna] == CELDA_VACIA) {
             mensaje += "La computadora fallo.";
@@ -346,3 +388,4 @@ string turnoComputadora(Tablero& tableroJugador, set<pair<int, int >>& ataquesRe
         return mensaje;
     }
 }
+
