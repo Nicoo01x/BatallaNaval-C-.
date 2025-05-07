@@ -351,3 +351,4 @@ string turnoComputadora(Tablero& tableroJugador, set<pair<int, int >>& ataquesRe
 // Autor: Nicolás Cabanillas y Sebastian Revuelta.
 // Universidad Blas Pascal.
 // Este programa es de unico fin educativo y no comercial.
+// Proibido la manipulacion del codigo fuente sin el consentimiento del autor.
