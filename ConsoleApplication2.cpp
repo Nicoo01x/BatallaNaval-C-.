@@ -222,7 +222,7 @@ void colocarBarcosJugador(Tablero& tablero) {
 
             if (fila < 0 || fila >= TAMANO_TABLERO || columna < 0 || columna >= TAMANO_TABLERO) {
                 cout << "Coordenadas fuera de rango. Intenta de nuevo." << endl;
-                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                cin.ignore(numeric_limits<streamsize>::max(), '\n'); //
                 continue;
             }
 
@@ -267,7 +267,7 @@ bool todosBarcosHundidos(const Tablero & tablero) { // Esta funcion verifica si 
     return true;
 }
 
-string turnoJugador(Tablero & tableroComputadora, Tablero& vistaComputadora) {
+string turnoJugador(Tablero& tableroComputadora, Tablero& vistaComputadora) {
     while (true) {
         cout << "Ingresa el objetivo a atacar (ej. B3): ";
         string pos;
