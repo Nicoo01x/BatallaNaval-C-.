@@ -5,6 +5,7 @@
 #include <cctype> // Para toupper y tolower
 #include <stdexcept> // Para manejar excepciones de stoi
 #include <string> 
+#include <set>
 
 
 
@@ -74,8 +75,6 @@ int main() {
     set<pair<int, int>> ataquesComputadora; // Para ataques ya realizados
     string mensajeAtaqueComputadora;  // Mensaje para mostrar debajo tablero Oponente
     string mensajeTurnoJugador;       // Mensaje para mostrar debajo tablero Computadora
-
-    cout << "\n¡Comienza el juego de Batalla Naval!\n";
 
     // Bucle principal del juego
     while (true) {
