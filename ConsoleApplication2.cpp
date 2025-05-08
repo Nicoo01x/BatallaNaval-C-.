@@ -258,7 +258,7 @@ void colocarBarcosComputadora(Tablero& tablero) {
     }
 }
 
-bool todosBarcosHundidos(const Tablero& tablero) {
+bool todosBarcosHundidos(const Tablero & tablero) { // Esta funcion verifica si todos los barcos han sido hundidos
     for (int r = 0; r < TAMANO_TABLERO; ++r) {
         for (int c = 0; c < TAMANO_TABLERO; ++c) {
             if (tablero[r][c] == CELDA_BARCO) return false;
@@ -267,7 +267,7 @@ bool todosBarcosHundidos(const Tablero& tablero) {
     return true;
 }
 
-string turnoJugador(Tablero& tableroComputadora, Tablero& vistaComputadora) {
+string turnoJugador(Tablero & tableroComputadora, Tablero& vistaComputadora) {
     while (true) {
         cout << "Ingresa el objetivo a atacar (ej. B3): ";
         string pos;
