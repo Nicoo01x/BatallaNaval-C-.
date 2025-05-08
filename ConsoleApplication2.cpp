@@ -51,7 +51,7 @@ string turnoComputadora(Tablero& tableroJugador, set<pair<int, int>>& ataquesRea
 
 int main() {
 	cout << "Batalla Naval / #Nicolas Cabanillas y Sebastian Revuelta" << endl;
-    srand(static_cast<unsigned int>(time(nullptr))); // Semilla para aleatorios
+    srand(time(0)); // esta linea inicializa la semilla para generar numeros aleatorios
 
     Tablero tableroJugador, tableroComputadora, vistaComputadora;
     inicializarTablero(tableroJugador);
