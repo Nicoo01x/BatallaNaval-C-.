@@ -53,7 +53,6 @@ string turnoComputadora(Tablero& tableroJugador, set<pair<int, int>>& ataquesRea
 
 int main() {
 
-as
 
     cout << "Bienvenido a la Batalla Naval" << endl;
     cout << "Creado por @Nicolas Cabanillas y @Sebastian Revuelta" << endl;
