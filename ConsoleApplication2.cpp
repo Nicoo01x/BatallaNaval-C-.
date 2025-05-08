@@ -28,6 +28,8 @@ vector<Barco> barcos = {
     {1, "Kayak"}
 };
 
+
+
 typedef vector<vector<char>> Tablero;
 
 // Función para limpiar la pantalla usando secuencia ANSI
@@ -48,6 +50,7 @@ string turnoJugador(Tablero& tableroComputadora, Tablero& vistaComputadora);
 string turnoComputadora(Tablero& tableroJugador, set<pair<int, int>>& ataquesRealizados);
 
 int main() {
+	cout << "Batalla Naval / #Nicolas Cabanillas y Sebastian Revuelta" << endl;
     srand(static_cast<unsigned int>(time(nullptr))); // Semilla para aleatorios
 
     Tablero tableroJugador, tableroComputadora, vistaComputadora;
@@ -205,7 +208,7 @@ void colocarBarcosJugador(Tablero& tablero) {
 
 			if (entrada.length() < 2 || !isalpha(entrada[0]) || !isdigit(entrada[1])) { //length verifica la longitud de la cadena
                 cout << "Entrada invalida. Intenta de nuevo." << endl;
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+				cin.ignore(numeric_limits<streamsize>::max(), '\n'); // esta linea ignora el resto de la entrada
                 continue;
             }
 
@@ -222,7 +225,7 @@ void colocarBarcosJugador(Tablero& tablero) {
 
             if (fila < 0 || fila >= TAMANO_TABLERO || columna < 0 || columna >= TAMANO_TABLERO) {
                 cout << "Coordenadas fuera de rango. Intenta de nuevo." << endl;
-                cin.ignore(numeric_limits<streamsize>::max(), '\n'); //
+                cin.ignore(numeric_limits<streamsize>::max(), '\n'); 
                 continue;
             }
 
@@ -347,7 +350,5 @@ string turnoComputadora(Tablero& tableroJugador, set<pair<int, int >>& ataquesRe
     }
 }
 
-// Derechos Reservados © 2025. 
 // Autor: Nicolás Cabanillas y Sebastian Revuelta.
 // Universidad Blas Pascal.
-// Proibido la manipulacion del codigo fuente sin el consentimiento del autor.
