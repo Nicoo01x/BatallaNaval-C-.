@@ -46,8 +46,8 @@ void colocarBarcosJugador(Tablero& tablero);
 bool colocarBarcoAleatorio(Tablero& tablero, int tamano);
 void colocarBarcosComputadora(Tablero& tablero);
 bool todosBarcosHundidos(const Tablero& tablero);
-string turnoJugador(Tablero& tableroComputadora, Tablero& vistaComputadora);
-string turnoComputadora(Tablero& tableroJugador, set<pair<int, int>>& ataquesRealizados);
+string turnoJugador(Tablero& tableroComputadora, Tablero& vistaComputadora); // vistaComputadora es el tablero que ve el jugador, sin barcos
+string turnoComputadora(Tablero& tableroJugador, set<pair<int, int>>& ataquesRealizados); // set para ataques realizados
 
 int main() {
 	cout << "Batalla Naval / #Nicolas Cabanillas y Sebastian Revuelta" << endl;
