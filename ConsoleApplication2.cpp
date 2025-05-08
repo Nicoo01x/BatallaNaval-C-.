@@ -167,13 +167,13 @@ void colocarBarco(Tablero& tablero, int r, int c, int tamano, bool horizontal) {
     }
 }
 
-bool colocarBarcoAleatorio(Tablero& tablero, int tamano) {
+bool colocarBarcoAleatorio(Tablero& tablero, int tamano) { // Esta funcion coloca un barco aleatoriamente en el tablero
     for (int intentos = 0; intentos < 100; ++intentos) {
         int fila = rand() % TAMANO_TABLERO;
         int columna = rand() % TAMANO_TABLERO;
         bool horizontal = rand() % 2 == 0;
 
-        if (puedeColocarBarco(tablero, fila, columna, tamano, horizontal)) {
+		if (puedeColocarBarco(tablero, fila, columna, tamano, horizontal)) { // puedeColocarBarco verifica si se puede colocar el barco en la posicion dada
             colocarBarco(tablero, fila, columna, tamano, horizontal);
             return true;
         }
@@ -203,7 +203,7 @@ void colocarBarcosJugador(Tablero& tablero) {
                 continue;
             }
 
-            if (entrada.length() < 2 || !isalpha(entrada[0]) || !isdigit(entrada[1])) {
+			if (entrada.length() < 2 || !isalpha(entrada[0]) || !isdigit(entrada[1])) { //length verifica la longitud de la cadena
                 cout << "Entrada invalida. Intenta de nuevo." << endl;
                 cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 continue;
