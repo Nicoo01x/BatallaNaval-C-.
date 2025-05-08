@@ -6,6 +6,9 @@
 #include <stdexcept> // Para manejar excepciones de stoi
 #include <string> 
 #include <set>
+#include <thread> // Necesario para std::this_thread::sleep_for
+#include <chrono>
+
 
 using namespace std;
 
@@ -50,7 +53,15 @@ string turnoJugador(Tablero& tableroComputadora, Tablero& vistaComputadora); // 
 string turnoComputadora(Tablero& tableroJugador, set<pair<int, int>>& ataquesRealizados); // set para ataques realizados
 
 int main() {
-	cout << "Batalla Naval / #Nicolas Cabanillas y Sebastian Revuelta" << endl;
+
+
+
+    cout << "Bienvenido a la Batalla Naval" << endl;
+    cout << "Creado por @Nicolas Cabanillas y @Sebastian Revuelta" << endl;
+    cout << "\n Presione cualquier tecla para iniciar el juego";
+	cin.get(); // Esta linea espera a que el usuario presione una tecla
+	limpiarPantalla();
+
     srand(time(0)); // esta linea inicializa la semilla para generar numeros aleatorios
 
     Tablero tableroJugador, tableroComputadora, vistaComputadora;
