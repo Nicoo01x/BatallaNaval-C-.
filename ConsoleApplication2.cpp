@@ -288,12 +288,12 @@ string turnoJugador(Tablero& tableroComputadora, Tablero& vistaComputadora) {
             continue;
         }
 
-        if (fila < 0 || fila >= TAMANO_TABLERO || columna < 0 || columna >= TAMANO_TABLERO) {
+		if (fila < 0 || fila >= TAMANO_TABLERO || columna < 0 || columna >= TAMANO_TABLERO) { // esta linea verifica si la fila y columna estan dentro del rango
             cout << "Coordenadas fuera de rango. Intenta de nuevo." << endl;
             continue;
         }
 
-        if (vistaComputadora[fila][columna] == CELDA_IMPACTO || vistaComputadora[fila][columna] == CELDA_FALLO) {
+		if (vistaComputadora[fila][columna] == CELDA_IMPACTO || vistaComputadora[fila][columna] == CELDA_FALLO) { // esta linea verifica si la celda ya fue atacada
             cout << "Ya atacaste esta posicion. Elige otra." << endl;
             continue;
         }
