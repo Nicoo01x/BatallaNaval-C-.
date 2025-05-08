@@ -5,9 +5,7 @@
 #include <cctype> // Para toupper y tolower
 #include <stdexcept> // Para manejar excepciones de stoi
 #include <string> 
-#include <set>
-#include <thread> // Necesario para std::this_thread::sleep_for
-#include <chrono>
+
 
 
 using namespace std;
@@ -58,7 +56,7 @@ int main() {
 
     cout << "Bienvenido a la Batalla Naval" << endl;
     cout << "Creado por @Nicolas Cabanillas y @Sebastian Revuelta" << endl;
-    cout << "\n Presione cualquier tecla para iniciar el juego";
+    cout << "Presione cualquier tecla para iniciar el juego";
 	cin.get(); // Esta linea espera a que el usuario presione una tecla
 	limpiarPantalla();
 
