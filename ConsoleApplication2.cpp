@@ -205,7 +205,7 @@ void colocarBarcosJugador(Tablero& tablero) {
 
 			if (entrada.length() < 2 || !isalpha(entrada[0]) || !isdigit(entrada[1])) { //length verifica la longitud de la cadena
                 cout << "Entrada invalida. Intenta de nuevo." << endl;
-                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 continue;
             }
 
@@ -216,7 +216,7 @@ void colocarBarcosJugador(Tablero& tablero) {
             }
             catch (invalid_argument&) {
                 cout << "Entrada invalida. Intenta de nuevo." << endl;
-                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
                 continue;
             }
 
