@@ -182,7 +182,7 @@ bool colocarBarcoAleatorio(Tablero& tablero, int tamano) {
 }
 
 void colocarBarcosJugador(Tablero& tablero) {
-    for (auto& barco : barcos) {
+	for (auto& barco : barcos) { // esta linea recorre el vector barcos y obtiene cada barco
         bool colocado = false;
         while (!colocado) {
             limpiarPantalla();
