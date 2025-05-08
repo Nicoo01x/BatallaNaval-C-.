@@ -57,7 +57,7 @@ int main() {
 
     cout << "Bienvenido a la Batalla Naval" << endl;
     cout << "Creado por @Nicolas Cabanillas y @Sebastian Revuelta" << endl;
-    cout << "Presione cualquier tecla para iniciar el juego";
+    cout << "Presione cualquier tecla para iniciar el juego" << endl;
 	cin.get(); // Esta linea espera a que el usuario presione una tecla
 	limpiarPantalla();
 
