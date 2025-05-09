@@ -69,20 +69,19 @@ int main() {
 
     // Colocar barcos jugador y computadora
     colocarBarcosJugador(tableroJugador);
-    colocarBarcosComputadora(tableroComputadora);
+    colocarBarcosComputadora(tableroComputadora);  
 
     set<pair<int, int>> ataquesComputadora; // Para ataques ya realizados
     string mensajeAtaqueComputadora;  // Mensaje para mostrar debajo tablero Oponente
     string mensajeTurnoJugador;       // Mensaje para mostrar debajo tablero Computadora
-
     // Bucle principal del juego
-    while (true) {
+    while (true) { 
         limpiarPantalla();
-
+        
         // Mostrar tableros
         cout << "Tu Tablero:" << endl;
         mostrarTablero(tableroJugador, false);  // mostrar barcos y estados
-
+        
         cout << "\nTablero del Oponente (lo que tu ves):" << endl;
         mostrarTablero(vistaComputadora, true); // ocultar barcos
 
